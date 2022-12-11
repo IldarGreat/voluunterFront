@@ -42,7 +42,7 @@ class LoginState extends State<LoginPage> {
           padding: const EdgeInsets.all(16),
           children: [
             const SizedBox(
-              height: 50,
+              height: 40,
             ),
             const Text(
               'Войти',

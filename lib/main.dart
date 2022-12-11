@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:volunteer/MainPage.dart';
+import 'package:volunteer/main_page.dart';
+import 'package:volunteer/register_pade.dart';
 
-import 'loginPade.dart';
+import 'login_page.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: LoginPage(),
+    home: RegisterPage(),
   ));
 }

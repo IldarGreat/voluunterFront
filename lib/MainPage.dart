@@ -32,21 +32,17 @@ class MainPageState extends State<MainPage> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: FooterView(
-        footer: Footer(
-          child: Text('I am a Customizable footer!!'),
-        ),
-        flex: 1,
-        children: <Widget>[
+      body: Column(
+        children: [
           Container(
             color: Colors.blue,
             alignment: Alignment.center,
             child: Column(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   height: 150,
                 ),
-                Text(
+                const Text(
                   'Помощь.\norg',
                   style: TextStyle(
                     color: Color.fromARGB(255, 255, 255, 123),
@@ -61,10 +57,68 @@ class MainPageState extends State<MainPage> {
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 150,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9.0),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 255, 255, 123)),
+                      ),
+                    ),
+                  ),
+                  onPressed: null,
+                  child: const Text(
+                    'Стать волонтером',
+                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 123)),
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9.0),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 255, 255, 123)),
+                      ),
+                    ),
+                  ),
+                  onPressed: null,
+                  child: const Text(
+                    'Войти в аккаунт',
+                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 123)),
+                  ),
+                ),
+                const SizedBox(
+                  height: 125,
+                ),
               ],
             ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Главная",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: "События",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_border),
+            label: "Личный кабинет",
           )
-        ], //default flex is 2
+        ],
+        selectedItemColor: Colors.blue,
       ),
     );
   }

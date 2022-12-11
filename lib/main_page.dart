@@ -25,7 +25,9 @@ class MainPageState extends State<MainPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/reference');
+            },
             icon: const Icon(Icons.more_vert),
             color: Colors.black54,
           ),
@@ -70,10 +72,14 @@ class MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/register');
+                  },
                   child: const Text(
                     'Стать волонтером',
-                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 123)),
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 123),
+                        fontSize: 30),
                   ),
                 ),
                 const SizedBox(
@@ -89,10 +95,14 @@ class MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
                   child: const Text(
                     'Войти в аккаунт',
-                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 123)),
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 123),
+                        fontSize: 30),
                   ),
                 ),
                 const SizedBox(
@@ -118,8 +128,14 @@ class MainPageState extends State<MainPage> {
             label: "Личный кабинет",
           )
         ],
+        currentIndex: 0,
         selectedItemColor: Colors.blue,
+        onTap: _onTappedBar,
       ),
     );
+  }
+
+  void _onTappedBar(int index) {
+    print('$index');
   }
 }

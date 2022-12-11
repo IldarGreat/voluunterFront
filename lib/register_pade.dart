@@ -41,9 +41,20 @@ class RegisterState extends State<RegisterPage> {
           'Регистрация волонтера',
           style: TextStyle(color: Colors.black),
         ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black54,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/reference');
+            },
             icon: const Icon(Icons.more_vert),
             color: Colors.black54,
           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const List<String> sexs = <String>['Мужской', 'Женский'];
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -19,6 +21,7 @@ class RegisterState extends State<RegisterPage> {
   final _languageController = TextEditingController();
   final _educationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String sex = sexs.first;
   @override
   void dispose() {
     super.dispose();
@@ -263,6 +266,25 @@ class RegisterState extends State<RegisterPage> {
               ),
               validator: (value) =>
                   (value!.isEmpty) ? 'Введите свое образование' : null,
+            ),
+            DropdownButton<String>(
+              value: sex,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.black),
+              underline: const SizedBox(),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  sex = value!;
+                });
+              },
+              items: sexs.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
             const SizedBox(
               height: 60,

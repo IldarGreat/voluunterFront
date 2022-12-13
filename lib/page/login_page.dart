@@ -166,11 +166,26 @@ class LoginState extends State<LoginPage> {
           )
         ],
         selectedItemColor: Colors.blue,
+        onTap: _onTappedBar,
       ),
     );
   }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {}
+  }
+
+  void _onTappedBar(int index) {
+    if (index != 0) {
+      final snackBar = SnackBar(
+        content: const Text('Ты не авторизован!'),
+        action: SnackBarAction(
+          label: 'Понял',
+          onPressed: () {},
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:volunteer/main_page.dart';
-import 'package:volunteer/reference_information_page.dart';
-import 'package:volunteer/register_pade.dart';
-
-import 'login_page.dart';
+import 'package:volunteer/page/main_auth_page.dart';
+import 'page/login_page.dart';
+import 'page/main_page.dart';
+import 'page/reference_information_page.dart';
+import 'page/register_pade.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -12,6 +12,7 @@ void main() {
       '/register': (context) => const RegisterPage(),
       '/login': (context) => const LoginPage(),
       '/reference': (context) => const ReferenceInformationPage(),
+      '/mainAuth': (context) => const MainAuth(),
     },
   ));
 }

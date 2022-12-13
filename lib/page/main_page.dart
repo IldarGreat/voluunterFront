@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
 
+import '../db/database.dart';
+import '../model/auth.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -10,6 +13,12 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  @override
+  void initState() {
+    super.initState();
+    hasAuthFuture();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,6 +145,27 @@ class MainPageState extends State<MainPage> {
   }
 
   void _onTappedBar(int index) {
-    print('$index');
+    if (index != 0) {
+      final snackBar = SnackBar(
+        content: const Text('Ты не авторизован!'),
+        action: SnackBarAction(
+          label: 'Понял',
+          onPressed: () {},
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  void hasAuthFuture() async {
+    List<Auth> auths = await DBProvider.db.getAuths();
+    Auth auth = Auth(0, "", "", "");
+    auths.forEach((element) {
+      auth = element;
+    });
+    if (auth.accessToken.isNotEmpty) {
+      Navigator.pushNamed(context, '/mainAuth');
+    }
   }
 }

@@ -1,3 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'auth.g.dart';
+@JsonSerializable()
 class Auth {
   late int id;
   late String accessToken;
@@ -20,4 +24,5 @@ class Auth {
     login = map['login'];
     role = map['role'];
   }
+  factory Auth.fromJson(Map<String,dynamic> json) => _$AuthFromJson(json);
 }

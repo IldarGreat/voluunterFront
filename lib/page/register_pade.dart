@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer/db/database.dart';
+import 'package:volunteer/model/auth.dart';
+
+import '../model/user_request.dart';
 
 const List<String> sexs = <String>['Мужской', 'Женский'];
 
@@ -22,6 +26,7 @@ class RegisterState extends State<RegisterPage> {
   final _educationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String sex = sexs.first;
+  late Future<List<Auth>> _authList;
   @override
   void dispose() {
     super.dispose();
@@ -182,6 +187,7 @@ class RegisterState extends State<RegisterPage> {
             TextFormField(
               controller: _phoneController,
               maxLength: 10,
+              keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: 'Номер телефона',
                 enabledBorder: OutlineInputBorder(
@@ -330,11 +336,50 @@ class RegisterState extends State<RegisterPage> {
           )
         ],
         selectedItemColor: Colors.blue,
+        onTap: _onTappedBar,
       ),
     );
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {}
+     deleteTHIS();
+    if (_formKey.currentState!.validate()) {
+      UserRequest user = UserRequest(
+          _nameController.text,
+          _surnameController.text,
+          _loginController.text,
+          _passwordController.text,
+          _phoneController.text,
+          _emailController.text,
+          _expirienceController.text,
+          _languageController.text,
+          _educationController.text,
+          sex);
+      // Тут отравляю данные на сервер и получаю ответ 200
+      Auth auth = Auth(0, 'some toke', 'some login', 'some role');
+      DBProvider.db.insertAuth(auth);
+      deleteTHIS();
+    }
+  }
+//Тут просто смотрю как в бд загрузились все норм
+  void deleteTHIS() async {
+    List<Auth> auths = await DBProvider.db.getAuths();
+    auths.forEach((element) {
+      print(element.accessToken);
+    });
+  }
+
+  void _onTappedBar(int index) {
+    if (index != 0) {
+      final snackBar = SnackBar(
+        content: const Text('Ты не авторизован!'),
+        action: SnackBarAction(
+          label: 'Понял',
+          onPressed: () {},
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 }

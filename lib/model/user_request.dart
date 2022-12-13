@@ -1,3 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
+part 'user_request.g.dart';
+
+@JsonSerializable()
 class UserRequest {
   String firstName;
   String secondName;
@@ -40,4 +44,5 @@ class UserRequest {
     return map;
   }
 
+  Map<String,dynamic> toJson() => _$UserRequestToJson(this);
 }

@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:volunteer/db/database.dart';
 import 'package:volunteer/model/auth.dart';
 
 import '../model/user_request.dart';
+import 'peronsal_area_user_page.dart';
 
 const List<String> sexs = <String>['Мужской', 'Женский'];
 
@@ -342,7 +345,7 @@ class RegisterState extends State<RegisterPage> {
   }
 
   void _submitForm() {
-     deleteTHIS();
+    deleteTHIS();
     if (_formKey.currentState!.validate()) {
       UserRequest user = UserRequest(
           _nameController.text,
@@ -356,11 +359,17 @@ class RegisterState extends State<RegisterPage> {
           _educationController.text,
           sex);
       // Тут отравляю данные на сервер и получаю ответ 200
-      Auth auth = Auth(0, 'some toke', 'some login', 'some role');
+      Auth auth =
+          Auth(Random().nextInt(1000), 'some toke', 'some login', 'some role');
       DBProvider.db.insertAuth(auth);
       deleteTHIS();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const PersonalAreaUserWidget()),
+      );
     }
   }
+
 //Тут просто смотрю как в бд загрузились все норм
   void deleteTHIS() async {
     List<Auth> auths = await DBProvider.db.getAuths();

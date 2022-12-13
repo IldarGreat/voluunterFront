@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer/page/main_page.dart';
 
 import '../db/database.dart';
 import '../model/auth.dart';
 
-class MainAuth extends StatefulWidget {
-  const MainAuth({super.key});
+class PersonalAreaUserWidget extends StatefulWidget {
+  const PersonalAreaUserWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() => MainAuthState();
+  State<StatefulWidget> createState() => PersonalAreaUseState();
 }
 
-class MainAuthState extends State<MainAuth> {
+class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
   String _login = "";
   @override
   void initState() {
@@ -63,36 +64,37 @@ class MainAuthState extends State<MainAuth> {
           card(
               'Список мероприятий',
               '\nБез Вас любому мероприятию будет непросто! Выберите из списка любое понравившееся мероприятие, заполните необходимые поля и вперед!',
-              'Список'),
+              'Список',
+              0),
           const SizedBox(
             height: 10,
           ),
           card(
               'Редактирование данных',
               '\nЧтобы редактировать личные данные волонтера, перейдите в соответсвующий раздел',
-              'Изменить'),
+              'Изменить',
+              1),
           const SizedBox(
             height: 10,
           ),
           card(
-              'Список мероприятий',
-              '\nБез Вас любому мероприятию будет непросто! Выберите из списка любое понравившееся мероприятие, заполните необходимые поля и вперед!',
-              'Список'),
+              'Список заявок',
+              '\nУже учавствовали в каком-либо мероприятии или это только предстоит? Посмотрите полный список Ваших заявок на мероприятия.',
+              'Заявки',
+              2),
           const SizedBox(
             height: 10,
           ),
           card(
               'Справочная информация',
               '\nЧтобы прочитать справочную информацию о системе, перейдите в соответсвующий раздел.',
-              'Справка'),
+              'Справка',
+              3),
+          logout(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Главная",
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: "События",
@@ -102,7 +104,7 @@ class MainAuthState extends State<MainAuth> {
             label: "Личный кабинет",
           )
         ],
-        currentIndex: 0,
+        currentIndex: 1,
         selectedItemColor: Colors.blue,
         onTap: _onTappedBar,
       ),
@@ -110,18 +112,8 @@ class MainAuthState extends State<MainAuth> {
   }
 
   void _onTappedBar(int index) {
-    if (index != 0) {
-      final snackBar = SnackBar(
-        content: const Text(
-          'Ты авторизован но пока не реализован',
-        ),
-        action: SnackBarAction(
-          label: 'Понял',
-          onPressed: () {},
-        ),
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    if (index == 0) {
+      Navigator.pushNamed(context, '/events');
     }
   }
 
@@ -136,7 +128,7 @@ class MainAuthState extends State<MainAuth> {
     });
   }
 
-  Card card(String title, String subtitle, String buttonName) {
+  Card card(String title, String subtitle, String buttonName, int index) {
     return Card(
       shadowColor: Colors.blueGrey,
       child: Column(
@@ -153,7 +145,17 @@ class MainAuthState extends State<MainAuth> {
             children: [
               const SizedBox(width: 13),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  switch (index) {
+                    case 0:
+                      Navigator.pushNamed(context, '/events');
+                      break;
+                    case 3:
+                      Navigator.pushNamed(context, '/reference');
+                      break;
+                    default:
+                  }
+                },
                 style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
@@ -175,6 +177,40 @@ class MainAuthState extends State<MainAuth> {
             height: 5,
           ),
         ],
+      ),
+    );
+  }
+
+  void logoutAndDeleteAuth() async {
+    List<Auth> auths = await DBProvider.db.getAuths();
+    int id = 0;
+    auths.forEach((element) {
+      id = element.id;
+    });
+    DBProvider.db.deleteAuth(id);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainPage()),
+    );
+  }
+
+  ElevatedButton logout() {
+    return ElevatedButton(
+      onPressed: () {
+        logoutAndDeleteAuth();
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9.0),
+            side: const BorderSide(color: Colors.blue),
+          ),
+        ),
+      ),
+      child: const Text(
+        'Выйти из аккаунта',
+        style: TextStyle(color: Colors.blue),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:volunteer/page/main_page.dart';
+import 'package:volunteer/model/user.dart';
+import 'package:volunteer/screens/main_page.dart';
 
 import '../db/database.dart';
 import '../model/auth.dart';
@@ -118,13 +119,9 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
   }
 
   void getLogin() async {
-    List<Auth> auths = await DBProvider.db.getAuths();
-    String login = "";
-    auths.forEach((element) {
-      login = element.login;
-    });
+    DBUser user = await DBProvider.db.getDBAuth();
     setState(() {
-      _login = login;
+      _login = user.firstName;
     });
   }
 
@@ -149,6 +146,12 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
                   switch (index) {
                     case 0:
                       Navigator.pushNamed(context, '/events');
+                      break;
+                    case 1:
+                      Navigator.pushNamed(context, '/register', arguments: true);
+                      break;
+                    case 2:
+                      Navigator.pushNamed(context, '/applications');
                       break;
                     case 3:
                       Navigator.pushNamed(context, '/reference');
@@ -182,12 +185,9 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
   }
 
   void logoutAndDeleteAuth() async {
-    List<Auth> auths = await DBProvider.db.getAuths();
-    int id = 0;
-    auths.forEach((element) {
-      id = element.id;
-    });
-    DBProvider.db.deleteAuth(id);
+    DBUser auth = await DBProvider.db.getDBAuth();
+    
+    DBProvider.db.deleteAuth(auth.id);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainPage()),

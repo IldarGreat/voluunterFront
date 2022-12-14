@@ -1,10 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:volunteer/api/auth_api.dart';
 import 'package:volunteer/db/database.dart';
 import 'package:volunteer/model/auth.dart';
 
-import '../model/user_request.dart';
+import '../model/user.dart';
 import 'peronsal_area_user_page.dart';
 
 const List<String> sexs = <String>['Мужской', 'Женский'];
@@ -29,7 +30,8 @@ class RegisterState extends State<RegisterPage> {
   final _educationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String sex = sexs.first;
-  late Future<List<Auth>> _authList;
+  bool editData = false;
+
   @override
   void dispose() {
     super.dispose();
@@ -46,11 +48,13 @@ class RegisterState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    RouteSettings settings = ModalRoute.of(context)!.settings;
+    editData = settings.arguments as bool;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Регистрация волонтера',
-          style: TextStyle(color: Colors.black),
+        title: Text(
+          editData ? 'Редактировать данные' : 'Регистрация волонтера',
+          style: const TextStyle(color: Colors.black),
         ),
         leading: IconButton(
           icon: const Icon(
@@ -80,10 +84,10 @@ class RegisterState extends State<RegisterPage> {
             const SizedBox(
               height: 40,
             ),
-            const Text(
-              'Регистрация',
+            Text(
+              editData ? 'Редактирование' : 'Регистрация',
               style: TextStyle(
-                fontSize: 50,
+                fontSize: editData ? 40 : 50,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -314,8 +318,8 @@ class RegisterState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                child: const Text(
-                  'Зарегистрироваться',
+                child: Text(
+                  editData ? 'Изменить' : 'Зарегистрироваться',
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
@@ -345,7 +349,6 @@ class RegisterState extends State<RegisterPage> {
   }
 
   void _submitForm() {
-    deleteTHIS();
     if (_formKey.currentState!.validate()) {
       UserRequest user = UserRequest(
           _nameController.text,
@@ -358,24 +361,26 @@ class RegisterState extends State<RegisterPage> {
           _languageController.text,
           _educationController.text,
           sex);
-      // Тут отравляю данные на сервер и получаю ответ 200
-      Auth auth =
-          Auth(Random().nextInt(1000), 'some toke', 'some login', 'some role');
-      DBProvider.db.insertAuth(auth);
-      deleteTHIS();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const PersonalAreaUserWidget()),
-      );
+      AuthApi().register(user).then((value) {
+        if (value.role == 'ERROR') {
+          _errorBar(value.accessToken);
+        } else {
+          DBUser dbUser = DBUser(
+              Random().nextInt(1000),
+              _nameController.text,
+              _surnameController.text,
+              value.accessToken,
+              value.login,
+              value.role);
+          DBProvider.db.insertAuth(dbUser);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PersonalAreaUserWidget()),
+          );
+        }
+      });
     }
-  }
-
-//Тут просто смотрю как в бд загрузились все норм
-  void deleteTHIS() async {
-    List<Auth> auths = await DBProvider.db.getAuths();
-    auths.forEach((element) {
-      print(element.accessToken);
-    });
   }
 
   void _onTappedBar(int index) {
@@ -390,5 +395,17 @@ class RegisterState extends State<RegisterPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  void _errorBar(String text){
+    final snackBar = SnackBar(
+        content:  Text(text),
+        action: SnackBarAction(
+          label: 'Понял',
+          onPressed: () {},
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

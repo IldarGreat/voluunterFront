@@ -1,4 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:volunteer/model/user.dart';
+
+import '../api/auth_api.dart';
+import '../db/database.dart';
+import 'peronsal_area_user_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -91,6 +98,7 @@ class LoginState extends State<LoginPage> {
               height: 20,
             ),
             TextFormField(
+              controller: _passwordController,
               maxLength: 10,
               obscureText: _hidePass,
               decoration: InputDecoration(
@@ -172,7 +180,24 @@ class LoginState extends State<LoginPage> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {}
+    if (_formKey.currentState!.validate()) {
+      AuthApi()
+          .login(_loginController.text, _passwordController.text)
+          .then((value) {
+        if (value.role == 'ERROR') {_errorBar(value.accessToken);
+        } else {
+          print(value.firstName);
+          DBUser dbUser = DBUser(Random().nextInt(1000), value.firstName,
+              value.secondName, value.accessToken, value.login, value.role);
+          DBProvider.db.insertAuth(dbUser);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PersonalAreaUserWidget()),
+          );
+        }
+      });
+    }
   }
 
   void _onTappedBar(int index) {
@@ -187,5 +212,17 @@ class LoginState extends State<LoginPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+   void _errorBar(String text){
+    final snackBar = SnackBar(
+        content:  Text(text),
+        action: SnackBarAction(
+          label: 'Понял',
+          onPressed: () {},
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

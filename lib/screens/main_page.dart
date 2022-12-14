@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:footer/footer.dart';
-import 'package:footer/footer_view.dart';
+import 'package:volunteer/model/user.dart';
 
 import '../db/database.dart';
 import '../model/auth.dart';
@@ -82,7 +81,7 @@ class MainPageState extends State<MainPage> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/register');
+                    Navigator.pushNamed(context, '/register',arguments: false);
                   },
                   child: const Text(
                     'Стать волонтером',
@@ -159,13 +158,9 @@ class MainPageState extends State<MainPage> {
   }
 
   void hasAuthFuture() async {
-    List<Auth> auths = await DBProvider.db.getAuths();
-    Auth auth = Auth(0, "", "", "");
-    auths.forEach((element) {
-      auth = element;
-    });
-    if (auth.accessToken.isNotEmpty) {
-      Navigator.pushNamed(context, '/mainAuth');
+    DBUser user = await DBProvider.db.getDBAuth();
+    if (user.firstName.isNotEmpty) {
+      Navigator.pushNamed(context, '/mainAuth',arguments: false);
     }
   }
 }

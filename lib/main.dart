@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:volunteer/screens/applications_page.dart';
 import 'package:volunteer/screens/events_page.dart';
 import 'package:volunteer/screens/peronsal_area_user_page.dart';
+import 'model/event.dart';
+import 'screens/event_page.dart';
 import 'screens/login_page.dart';
 import 'screens/main_page.dart';
 import 'screens/reference_information_page.dart';
@@ -32,6 +34,11 @@ void main() {
           String accessToken = settings.arguments as String;
           return MaterialPageRoute(
               builder: (context) => EventsWidget(accessToken));
+          break;
+        case '/event':
+          Event event = settings.arguments as Event;
+          return MaterialPageRoute(
+              builder: (context) => EventScreen(event));
           break;
         case '/applications':
           return MaterialPageRoute(

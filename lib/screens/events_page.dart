@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer/api/application_api.dart';
 import 'package:volunteer/api/event_api.dart';
 import 'package:volunteer/model/event.dart';
 
@@ -129,8 +130,17 @@ class EventState extends State<EventsWidget> {
   Widget button(String text, Color color, int id) {
     return ElevatedButton(
       onPressed: () {
-        if (text == 'Просмотр') {}
-        print('$id');
+        if (text == 'Просмотр') {
+          DBProvider.db.getDBAuth().then((value) {
+            EventApi().getEvent(id, value.accessToken).then((value) =>
+                Navigator.pushNamed(context, '/event', arguments: value));
+          });
+        } else {
+          print('$id');
+          DBProvider.db.getDBAuth().then((value) => ApplicationApi()
+              .applyToEvent(id, value.accessToken)
+              .then((value) => onTappedApply(value.status)));
+        }
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -146,5 +156,17 @@ class EventState extends State<EventsWidget> {
         style: TextStyle(color: color),
       ),
     );
+  }
+
+  void onTappedApply(String status) {
+    final snackBar = SnackBar(
+      content: Text(status.isEmpty ? 'Ты уже подал заявку' : 'Заявка подана!'),
+      action: SnackBarAction(
+        label: 'Ок',
+        onPressed: () {},
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

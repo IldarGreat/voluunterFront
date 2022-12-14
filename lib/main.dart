@@ -10,13 +10,42 @@ import 'screens/register_pade.dart';
 void main() {
   runApp(MaterialApp(
     home: const MainPage(),
-    routes: {
-      '/register': (context) => const RegisterPage(),
-      '/login': (context) => const LoginPage(),
-      '/reference': (context) => const ReferenceInformationPage(),
-      '/mainAuth': (context) => const PersonalAreaUserWidget(),
-      '/events': (context) => const EventsWidget(),
-      '/applications': (context) => const ApplicationsWidget(),
+    onGenerateRoute: (settings) {
+      switch (settings.name) {
+        case '/register':
+          bool editData = settings.arguments as bool;
+          return MaterialPageRoute(
+              builder: (context) => RegisterPage(editData));
+          break;
+        case '/login':
+          return MaterialPageRoute(builder: (context) => const LoginPage());
+          break;
+        case '/reference':
+          return MaterialPageRoute(
+              builder: (context) => const ReferenceInformationPage());
+          break;
+        case '/mainAuth':
+          return MaterialPageRoute(
+              builder: (context) => const PersonalAreaUserWidget());
+          break;
+        case '/events':
+          String accessToken = settings.arguments as String;
+          return MaterialPageRoute(
+              builder: (context) => EventsWidget(accessToken));
+          break;
+        case '/applications':
+          return MaterialPageRoute(
+              builder: (context) => const ApplicationsWidget());
+          break;
+      }
     },
+    //routes: {
+    //  '/register': (context) => const RegisterPage(),
+    //  '/login': (context) => const LoginPage(),
+    //  '/reference': (context) => const ReferenceInformationPage(),
+    //  '/mainAuth': (context) => const PersonalAreaUserWidget(),
+    //  '/events': (context) => const EventsWidget(),
+    //  '/applications': (context) => const ApplicationsWidget(),
+    // },
   ));
 }

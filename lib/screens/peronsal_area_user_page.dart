@@ -114,7 +114,9 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
 
   void _onTappedBar(int index) {
     if (index == 0) {
-      Navigator.pushNamed(context, '/events');
+      DBProvider.db.getDBAuth().then((value) =>
+                          Navigator.pushNamed(context, '/events',
+                              arguments: value.accessToken));
     }
   }
 
@@ -145,10 +147,14 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
                 onPressed: () {
                   switch (index) {
                     case 0:
-                      Navigator.pushNamed(context, '/events');
+                      DBProvider.db.getDBAuth().then((value) =>
+                          Navigator.pushNamed(context, '/events',
+                              arguments: value.accessToken));
+                      // Navigator.pushNamed(context, '/events' , arguments: value.accessToken);
                       break;
                     case 1:
-                      Navigator.pushNamed(context, '/register', arguments: true);
+                      Navigator.pushNamed(context, '/register',
+                          arguments: true);
                       break;
                     case 2:
                       Navigator.pushNamed(context, '/applications');
@@ -186,7 +192,7 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
 
   void logoutAndDeleteAuth() async {
     DBUser auth = await DBProvider.db.getDBAuth();
-    
+
     DBProvider.db.deleteAuth(auth.id);
     Navigator.pushReplacement(
       context,

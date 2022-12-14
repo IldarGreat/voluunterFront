@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:volunteer/api/auth_api.dart';
 import 'package:volunteer/db/database.dart';
-import 'package:volunteer/model/auth.dart';
 
 import '../model/user.dart';
 import 'peronsal_area_user_page.dart';
@@ -11,10 +10,11 @@ import 'peronsal_area_user_page.dart';
 const List<String> sexs = <String>['Мужской', 'Женский'];
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  late bool _editData;
+  RegisterPage(this._editData);
 
   @override
-  State<StatefulWidget> createState() => RegisterState();
+  State<StatefulWidget> createState() => RegisterState(_editData);
 }
 
 class RegisterState extends State<RegisterPage> {
@@ -30,8 +30,8 @@ class RegisterState extends State<RegisterPage> {
   final _educationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String sex = sexs.first;
-  bool editData = false;
-
+  late bool editData;
+  RegisterState(this.editData);
   @override
   void dispose() {
     super.dispose();
@@ -48,8 +48,6 @@ class RegisterState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    RouteSettings settings = ModalRoute.of(context)!.settings;
-    editData = settings.arguments as bool;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -397,15 +395,15 @@ class RegisterState extends State<RegisterPage> {
     }
   }
 
-  void _errorBar(String text){
+  void _errorBar(String text) {
     final snackBar = SnackBar(
-        content:  Text(text),
-        action: SnackBarAction(
-          label: 'Понял',
-          onPressed: () {},
-        ),
-      );
+      content: Text(text),
+      action: SnackBarAction(
+        label: 'Понял',
+        onPressed: () {},
+      ),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

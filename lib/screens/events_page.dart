@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer/api/event_api.dart';
+import 'package:volunteer/model/event.dart';
+
+import '../db/database.dart';
 
 class EventsWidget extends StatefulWidget {
-  const EventsWidget({super.key});
+  late String _accessToken;
+  EventsWidget(this._accessToken);
 
   @override
-  State<StatefulWidget> createState() => EventState();
+  State<StatefulWidget> createState() => EventState(_accessToken);
 }
 
 class EventState extends State<EventsWidget> {
+  late Future<EventList> _eventList;
+  late String _accessToken;
+  EventState(this._accessToken);
+  @override
+  void initState() {
+    super.initState();
+    _eventList = EventApi().getEvents(_accessToken);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +48,60 @@ class EventState extends State<EventsWidget> {
         ],
         backgroundColor: Colors.white,
       ),
+      body: Padding(
+        padding: const EdgeInsets.only(right: 25, left: 25),
+        child: FutureBuilder(
+          future: _eventList,
+          builder: ((context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data?.events.length,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return const Text(
+                        'Список мероприятий',
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }
+                    return Card(
+                      child: ListTile(
+                        title: Text(
+                          '${snapshot.data?.events[index].title}',
+                          style: const TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                button('Просмотр', Colors.blue,
+                                    snapshot.data!.events[index].id),
+                                button('Записаться', Colors.green,
+                                    snapshot.data!.events[index].id)
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            } else if (snapshot.hasError) {
+              return const Text('Error');
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
@@ -56,5 +124,27 @@ class EventState extends State<EventsWidget> {
     if (index == 1) {
       Navigator.pop(context);
     }
+  }
+
+  Widget button(String text, Color color, int id) {
+    return ElevatedButton(
+      onPressed: () {
+        if (text == 'Просмотр') {}
+        print('$id');
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9.0),
+            side: BorderSide(color: color),
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(color: color),
+      ),
+    );
   }
 }

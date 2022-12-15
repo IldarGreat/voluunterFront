@@ -41,8 +41,9 @@ void main() {
               builder: (context) => EventScreen(event));
           break;
         case '/applications':
+          String accessToken = settings.arguments as String;
           return MaterialPageRoute(
-              builder: (context) => const ApplicationsWidget());
+              builder: (context) => ApplicationsWidget(accessToken));
           break;
       }
     },

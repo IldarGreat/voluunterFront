@@ -1,6 +1,6 @@
 class Constants {
   static const String VOLUNTEER_BASE_SCHEMA = 'http://';
-  static const String VOLUNTEER_BASE_URL_DOMAIN = '192.168.106.96:8080';
+  static const String VOLUNTEER_BASE_URL_DOMAIN = '192.168.112.96:8080';
   static const String VOLUNTEER_AUTH_PATH = '/auth';
   static const String VOLUNTEER_USER_PATH = '/users';
   static const String VOLUNTEER_TASKS_PATH = '/tasks';

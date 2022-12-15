@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
+import '../api/application_api.dart';
+import '../db/database.dart';
 import '../model/event.dart';
 import '../model/task.dart';
 
@@ -151,6 +153,48 @@ class _EventScreenState extends State<EventScreen> {
             ),
           ),
         ),
+        const SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            applyToEvent();
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(9.0),
+                side: const BorderSide(color: Colors.blue),
+              ),
+            ),
+          ),
+          child: const Text(
+            'Подать заявку',
+            style: TextStyle(color: Colors.blue),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            deleteEvent();
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(9.0),
+                side: const BorderSide(color: Colors.red),
+              ),
+            ),
+          ),
+          child: const Text(
+            'Отменить заявку',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
       ]),
     );
   }
@@ -161,5 +205,41 @@ class _EventScreenState extends State<EventScreen> {
       stringTask = '$stringTask${element.description},';
     });
     return stringTask;
+  }
+
+  void applyToEvent() {
+    DBProvider.db.getDBAuth().then((value) => ApplicationApi()
+        .applyToEvent(_event.id, value.accessToken)
+        .then((value) => {onTappedApply(value.status)}));
+  }
+
+  void deleteEvent() {
+    DBProvider.db.getDBAuth().then((value) => ApplicationApi()
+        .deleteApply(_event.id, value.accessToken)
+        .then((value) => {onTappedDelete(value)}));
+  }
+
+  void onTappedApply(String status) {
+    final snackBar = SnackBar(
+      content: Text(status.isEmpty ? 'Ты уже подал заявку' : 'Заявка подана!'),
+      action: SnackBarAction(
+        label: 'Ок',
+        onPressed: () {},
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void onTappedDelete(String value) {
+    final snackBar = SnackBar(
+      content: Text(value),
+      action: SnackBarAction(
+        label: 'Ок',
+        onPressed: () {},
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

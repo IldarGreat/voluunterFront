@@ -157,7 +157,9 @@ class PersonalAreaUseState extends State<PersonalAreaUserWidget> {
                           arguments: true);
                       break;
                     case 2:
-                      Navigator.pushNamed(context, '/applications');
+                      DBProvider.db.getDBAuth().then((value) =>
+                          Navigator.pushNamed(context, '/applications',
+                              arguments: value.accessToken));
                       break;
                     case 3:
                       Navigator.pushNamed(context, '/reference');

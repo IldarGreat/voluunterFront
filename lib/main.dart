@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer/model/user.dart';
+import 'package:volunteer/screens/admin/view_user_page.dart';
 import 'package:volunteer/screens/user/applications_page.dart';
 import 'package:volunteer/screens/user/events_page.dart';
 import 'package:volunteer/screens/user/peronsal_area_user_page.dart';
 import 'model/event.dart';
 import 'screens/admin/add_event_page.dart';
 import 'screens/admin/admin_area.dart';
+import 'screens/admin/all_application_page.dart';
 import 'screens/admin/event_admin_page.dart';
 import 'screens/admin/my_event_page.dart';
 import 'screens/user/event_page.dart';
@@ -62,6 +65,14 @@ void main() {
         case '/showEventToAdmin':
           Event event = settings.arguments as Event;
           return MaterialPageRoute(builder: (context) => AdminEvent(event));
+
+        case '/showApplicationToAdmin':
+          UtilEvent utilEvent = settings.arguments as UtilEvent;
+          return MaterialPageRoute(builder: (context) => AllApplicationsWidget(utilEvent));
+
+        case '/showUser':
+          UserRequest user = settings.arguments as UserRequest;
+          return MaterialPageRoute(builder: (context) => UserView(user));
       }
     },
   ));

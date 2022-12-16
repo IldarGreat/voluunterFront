@@ -53,60 +53,75 @@ class _AdminEventsState extends State<AdminEvents> {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(right: 25, left: 25),
-        child: FutureBuilder(
-          future: _eventList,
-          builder: ((context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data?.events.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          '${snapshot.data?.events[index].title}',
-                          style: const TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          children: [
-                            const SizedBox(
-                              height: 15,
+          padding: const EdgeInsets.all(16),
+          child: ListView(
+            padding: EdgeInsets.all(14),
+            children: [
+              const Text(
+                'Мои мероприятия',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+              ),
+              FutureBuilder(
+                future: _eventList,
+                builder: ((context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data?.events.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: ListTile(
+                              title: Text(
+                                '${snapshot.data?.events[index].title}',
+                                style: const TextStyle(
+                                    fontSize: 30, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      button(
+                                          'Просмотр',
+                                          Colors.blue,
+                                          snapshot.data!.events[index].id,
+                                          snapshot.data!.events[index]),
+                                      button(
+                                          'Удалить',
+                                          Colors.red,
+                                          snapshot.data!.events[index].id,
+                                          snapshot.data!.events[index])
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                button('Просмотр', Colors.blue,
-                                    snapshot.data!.events[index].id,snapshot.data!.events[index]),
-                                button('Удалить', Colors.red,
-                                    snapshot.data!.events[index].id,snapshot.data!.events[index])
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            } else if (snapshot.hasError) {
-              return const Text('Error');
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-        ),
-      ),
+                          );
+                        });
+                  } else if (snapshot.hasError) {
+                    return const Text('Error');
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }),
+              ),
+            ],
+          )),
     );
   }
 
-  Widget button(String text, Color color, int id,Event event) {
+  Widget button(String text, Color color, int id, Event event) {
     return ElevatedButton(
       onPressed: () {
         if (text == 'Удалить') {
           _showDialog(id);
         } else {
-          Navigator.pushNamed(context, '/showEventToAdmin',arguments: event);
+          Navigator.pushNamed(context, '/showEventToAdmin', arguments: event);
         }
       },
       style: ButtonStyle(

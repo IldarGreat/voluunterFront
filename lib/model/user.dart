@@ -56,6 +56,20 @@ class UserRequest {
         'education': education,
         'sex': sex == 'Мужской' ? 'MALE' : 'FEMALE',
       };
+
+  factory UserRequest.fromJson(Map<String, dynamic> json) {
+    return UserRequest(
+        json['firstName'] as String,
+        json['secondName'] as String,
+        '',
+        '',
+        json['phone'] as String,
+        json['email'] as String,
+        json['experience'] as String,
+        json['languages'] as String,
+        json['education'] as String,
+        json['sex'] as String);
+  }
 }
 
 class DBUser {

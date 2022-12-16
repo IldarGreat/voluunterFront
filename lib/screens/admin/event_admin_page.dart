@@ -136,7 +136,11 @@ class _AdminEventState extends State<AdminEvent> {
           height: 20,
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            DBProvider.db.getDBAuth().then((value) => Navigator.pushNamed(
+                context, '/showApplicationToAdmin',
+                arguments: UtilEvent(_event.id, value.accessToken)));
+          },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -148,25 +152,6 @@ class _AdminEventState extends State<AdminEvent> {
           ),
           child: const Text(
             'Список заявок волонтеров',
-            style: TextStyle(color: Colors.blue),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        ElevatedButton(
-          onPressed: () {},
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(9.0),
-                side: const BorderSide(color: Colors.blue),
-              ),
-            ),
-          ),
-          child: const Text(
-            'Список выбранных волонтеров',
             style: TextStyle(color: Colors.blue),
           ),
         ),

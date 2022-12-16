@@ -72,7 +72,7 @@ class _ApplicationsWidgetState extends State<ApplicationsWidget> {
                         return Card(
                           child: ListTile(
                             title: Text(
-                              '${snapshot.data?.applications[index].eventTitle} $index',
+                              '${snapshot.data?.applications[index].eventTitle}',
                               style: const TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.bold),
                             ),

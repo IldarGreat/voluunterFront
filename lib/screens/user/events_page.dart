@@ -49,59 +49,60 @@ class EventState extends State<EventsWidget> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 25, left: 25),
-        child: FutureBuilder(
-          future: _eventList,
-          builder: ((context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data?.events.length,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return const Text(
-                        'Список мероприятий',
-                        style: TextStyle(
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          '${snapshot.data?.events[index].title}',
-                          style: const TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          children: [
-                            const SizedBox(
-                              height: 15,
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          const Text(
+            'Список мероприятий',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 25, left: 25),
+            child: FutureBuilder(
+              future: _eventList,
+              builder: ((context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data?.events.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            title: Text(
+                              '${snapshot.data?.events[index].title}',
+                              style: const TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            subtitle: Column(
                               children: [
-                                button('Просмотр', Colors.blue,
-                                    snapshot.data!.events[index].id),
-                                button('Записаться', Colors.green,
-                                    snapshot.data!.events[index].id)
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    button('Просмотр', Colors.blue,
+                                        snapshot.data!.events[index].id),
+                                    button('Записаться', Colors.green,
+                                        snapshot.data!.events[index].id)
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            } else if (snapshot.hasError) {
-              return const Text('Error');
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-        ),
+                          ),
+                        );
+                      });
+                } else if (snapshot.hasError) {
+                  return const Text('Error');
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -168,7 +169,7 @@ class EventState extends State<EventsWidget> {
       status = 'Ты уже подал заявку';
     } else if (status == 'ADMIN') {
       status = 'Ты админ, тебе нельзя подавать заявки';
-    } else if(status.isNotEmpty){
+    } else if (status.isNotEmpty) {
       status = 'Заявка подана!';
     }
     final snackBar = SnackBar(

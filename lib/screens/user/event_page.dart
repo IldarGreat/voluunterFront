@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-import '../api/application_api.dart';
-import '../db/database.dart';
-import '../model/event.dart';
-import '../model/task.dart';
+import '../../api/application_api.dart';
+import '../../db/database.dart';
+import '../../model/event.dart';
+import '../../model/task.dart';
 
 class EventScreen extends StatefulWidget {
   late Event _event;
@@ -208,9 +208,15 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void applyToEvent() {
-    DBProvider.db.getDBAuth().then((value) => ApplicationApi()
-        .applyToEvent(_event.id, value.accessToken)
-        .then((value) => {onTappedApply(value.status)}));
+    DBProvider.db.getDBAuth().then((value) {
+      if (value.accessRole == 'ADMIN') {
+        onTappedApply('ADMIN');
+      } else {
+        ApplicationApi()
+            .applyToEvent(_event.id, value.accessToken)
+            .then((value) => {onTappedApply(value.status)});
+      }
+    });
   }
 
   void deleteEvent() {
@@ -220,8 +226,15 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void onTappedApply(String status) {
+    if (status.isEmpty) {
+      status = 'Ты уже подал заявку';
+    } else if (status == 'ADMIN') {
+      status = 'Ты админ, тебе нельзя подавать заявки';
+    } else if(status.isNotEmpty){
+      status = 'Заявка подана!';
+    }
     final snackBar = SnackBar(
-      content: Text(status.isEmpty ? 'Ты уже подал заявку' : 'Заявка подана!'),
+      content: Text(status),
       action: SnackBarAction(
         label: 'Ок',
         onPressed: () {},

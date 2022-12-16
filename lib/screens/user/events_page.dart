@@ -3,7 +3,7 @@ import 'package:volunteer/api/application_api.dart';
 import 'package:volunteer/api/event_api.dart';
 import 'package:volunteer/model/event.dart';
 
-import '../db/database.dart';
+import '../../db/database.dart';
 
 class EventsWidget extends StatefulWidget {
   late String _accessToken;
@@ -137,9 +137,15 @@ class EventState extends State<EventsWidget> {
           });
         } else {
           print('$id');
-          DBProvider.db.getDBAuth().then((value) => ApplicationApi()
-              .applyToEvent(id, value.accessToken)
-              .then((value) => onTappedApply(value.status)));
+          DBProvider.db.getDBAuth().then((value) {
+            if (value.accessRole == 'ADMIN') {
+              onTappedApply('ADMIN');
+            } else {
+              ApplicationApi()
+                  .applyToEvent(id, value.accessToken)
+                  .then((value) => onTappedApply(value.status));
+            }
+          });
         }
       },
       style: ButtonStyle(
@@ -159,8 +165,15 @@ class EventState extends State<EventsWidget> {
   }
 
   void onTappedApply(String status) {
+    if (status.isEmpty) {
+      status = 'Ты уже подал заявку';
+    } else if (status == 'ADMIN') {
+      status = 'Ты админ, тебе нельзя подавать заявки';
+    } else if(status.isNotEmpty){
+      status = 'Заявка подана!';
+    }
     final snackBar = SnackBar(
-      content: Text(status.isEmpty ? 'Ты уже подал заявку' : 'Заявка подана!'),
+      content: Text(status),
       action: SnackBarAction(
         label: 'Ок',
         onPressed: () {},

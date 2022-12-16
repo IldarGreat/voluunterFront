@@ -40,6 +40,17 @@ class Event {
         json['endedDay'] as String,
         json['startedTime'] as String);
   }
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['title'] = title;
+    map['volunteerAmount'] = '$volunteerAmount';
+    map['place'] = place;
+    map['startedDay'] = startedDay;
+    map['endedDay'] = endedDay;
+    map['startedTime'] = startedTime;
+    return map;
+  }
 }
 
 

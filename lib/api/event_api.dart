@@ -36,8 +36,26 @@ class EventApi {
     } else {
       List<Task> tasks = [];
       TaskList taskList = TaskList(tasks);
-      Event event = Event(0, '', 0, '',taskList,'', '','');
+      Event event = Event(0, '', 0, '', taskList, '', '', '');
       return event;
+    }
+  }
+
+  Future<String> addEvent(Event event, String accessToken) async {
+    final response = await http.post(
+        Uri.parse(
+            '${Constants.VOLUNTEER_BASE_SCHEMA}${Constants.VOLUNTEER_BASE_URL_DOMAIN}${Constants.VOLUNTEER_ADMIN_PATH}'),
+        headers: <String, String>{
+          'Cookie': 'volunteerJWT=$accessToken',
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: json.encode(event.toJson()));
+    if (response.statusCode == 201) {
+      return 'Успешно создана!';
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
+      return 'Произошла ошибка';
     }
   }
 }

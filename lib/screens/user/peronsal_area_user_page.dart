@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:volunteer/model/user.dart';
 import 'package:volunteer/screens/main_page.dart';
 
-import '../db/database.dart';
-import '../model/auth.dart';
+import '../../db/database.dart';
+import '../../model/auth.dart';
 
 class PersonalAreaUserWidget extends StatefulWidget {
   const PersonalAreaUserWidget({super.key});

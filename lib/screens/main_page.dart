@@ -81,7 +81,7 @@ class MainPageState extends State<MainPage> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/register',arguments: false);
+                    Navigator.pushNamed(context, '/register', arguments: false);
                   },
                   child: const Text(
                     'Стать волонтером',
@@ -159,8 +159,11 @@ class MainPageState extends State<MainPage> {
 
   void hasAuthFuture() async {
     DBUser user = await DBProvider.db.getDBAuth();
-    if (user.firstName.isNotEmpty) {
-      Navigator.pushNamed(context, '/mainAuth',arguments: false);
+    print(user.accessRole);
+    if (user.accessRole == 'USER') {
+      Navigator.pushNamed(context, '/mainAuth', arguments: false);
+    } else if (user.accessRole == 'ADMIN') {
+      Navigator.pushNamed(context, '/adminPage');
     }
   }
 }

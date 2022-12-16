@@ -5,7 +5,7 @@ import 'package:volunteer/api/auth_api.dart';
 import 'package:volunteer/db/database.dart';
 
 import '../model/user.dart';
-import 'peronsal_area_user_page.dart';
+import 'user/peronsal_area_user_page.dart';
 
 const List<String> sexs = <String>['Мужской', 'Женский'];
 
@@ -318,7 +318,7 @@ class RegisterState extends State<RegisterPage> {
                 ),
                 child: Text(
                   editData ? 'Изменить' : 'Зарегистрироваться',
-                  style: TextStyle(color: Colors.blue),
+                  style: const TextStyle(color: Colors.blue),
                 ),
               ),
             )

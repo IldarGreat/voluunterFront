@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:volunteer/model/user.dart';
+import 'package:volunteer/screens/admin/admin_area.dart';
 
 import '../api/auth_api.dart';
 import '../db/database.dart';
-import 'peronsal_area_user_page.dart';
+import 'user/peronsal_area_user_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -184,17 +185,26 @@ class LoginState extends State<LoginPage> {
       AuthApi()
           .login(_loginController.text, _passwordController.text)
           .then((value) {
-        if (value.role == 'ERROR') {_errorBar(value.accessToken);
+        if (value.role == 'ERROR') {
+          _errorBar(value.accessToken);
         } else {
           print(value.firstName);
           DBUser dbUser = DBUser(Random().nextInt(1000), value.firstName,
               value.secondName, value.accessToken, value.login, value.role);
           DBProvider.db.insertAuth(dbUser);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const PersonalAreaUserWidget()),
-          );
+          if (dbUser.accessRole == 'USER') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const PersonalAreaUserWidget()),
+            );
+          } else if (dbUser.accessRole == 'ADMIN') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AdminPage()),
+            );
+          }
         }
       });
     }
@@ -214,15 +224,15 @@ class LoginState extends State<LoginPage> {
     }
   }
 
-   void _errorBar(String text){
+  void _errorBar(String text) {
     final snackBar = SnackBar(
-        content:  Text(text),
-        action: SnackBarAction(
-          label: 'Понял',
-          onPressed: () {},
-        ),
-      );
+      content: Text(text),
+      action: SnackBarAction(
+        label: 'Понял',
+        onPressed: () {},
+      ),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

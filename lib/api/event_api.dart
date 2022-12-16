@@ -23,6 +23,37 @@ class EventApi {
     }
   }
 
+  Future<EventList> getMyEvents(String accessToken) async {
+    final response = await http.get(
+      Uri.parse(
+          '${Constants.VOLUNTEER_BASE_SCHEMA}${Constants.VOLUNTEER_BASE_URL_DOMAIN}${Constants.VOLUNTEER_ADMIN_PATH}'),
+      headers: <String, String>{
+        'Cookie': 'volunteerJWT=$accessToken',
+      },
+    );
+    if (response.statusCode == 200) {
+      return EventList.fromJson(jsonDecode(response.body));
+    } else {
+      List<Event> events = [];
+      return EventList(events);
+    }
+  }
+
+   Future<String> deleteEvent(String accessToken,int eventId) async {
+    final response = await http.delete(
+      Uri.parse(
+          '${Constants.VOLUNTEER_BASE_SCHEMA}${Constants.VOLUNTEER_BASE_URL_DOMAIN}${Constants.VOLUNTEER_ADMIN_PATH}/$eventId'),
+      headers: <String, String>{
+        'Cookie': 'volunteerJWT=$accessToken',
+      },
+    );
+    if (response.statusCode == 204) {
+      return 'Удалено!';
+    } else {
+      return 'Ошибка';
+    }
+  }
+
   Future<Event> getEvent(int id, String accessToken) async {
     final response = await http.get(
       Uri.parse(

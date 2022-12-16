@@ -5,6 +5,8 @@ import 'package:volunteer/screens/user/peronsal_area_user_page.dart';
 import 'model/event.dart';
 import 'screens/admin/add_event_page.dart';
 import 'screens/admin/admin_area.dart';
+import 'screens/admin/event_admin_page.dart';
+import 'screens/admin/my_event_page.dart';
 import 'screens/user/event_page.dart';
 import 'screens/login_page.dart';
 import 'screens/main_page.dart';
@@ -20,38 +22,46 @@ void main() {
           bool editData = settings.arguments as bool;
           return MaterialPageRoute(
               builder: (context) => RegisterPage(editData));
-          break;
+
         case '/login':
           return MaterialPageRoute(builder: (context) => const LoginPage());
-          break;
+
         case '/reference':
           return MaterialPageRoute(
               builder: (context) => const ReferenceInformationPage());
-          break;
+
         case '/mainAuth':
           return MaterialPageRoute(
               builder: (context) => const PersonalAreaUserWidget());
-          break;
+
         case '/adminPage':
           return MaterialPageRoute(builder: (context) => const AdminPage());
-          break;
+
         case '/events':
           String accessToken = settings.arguments as String;
           return MaterialPageRoute(
               builder: (context) => EventsWidget(accessToken));
-          break;
+
         case '/event':
           Event event = settings.arguments as Event;
           return MaterialPageRoute(builder: (context) => EventScreen(event));
-          break;
+
         case '/addEvent':
           return MaterialPageRoute(builder: (context) => const AddEventPage());
-          break;
+
         case '/applications':
           String accessToken = settings.arguments as String;
           return MaterialPageRoute(
               builder: (context) => ApplicationsWidget(accessToken));
-          break;
+
+        case '/adminEvents':
+          String accessToken = settings.arguments as String;
+          return MaterialPageRoute(
+              builder: (context) => AdminEvents(accessToken));
+
+        case '/showEventToAdmin':
+          Event event = settings.arguments as Event;
+          return MaterialPageRoute(builder: (context) => AdminEvent(event));
       }
     },
   ));

@@ -173,6 +173,9 @@ class _AdminPageState extends State<AdminPage> {
                       Navigator.pushNamed(context, '/addEvent');
                       break;
                     case 1:
+                      DBProvider.db.getDBAuth().then((value) =>
+                          Navigator.pushNamed(context, '/adminEvents',
+                              arguments: value.accessToken));
                       break;
                     case 2:
                       Navigator.pushNamed(context, '/reference');

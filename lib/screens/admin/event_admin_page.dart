@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:volunteer/model/event.dart';
 
-import '../../api/application_api.dart';
+import '../../api/event_api.dart';
 import '../../db/database.dart';
-import '../../model/event.dart';
-import '../../model/task.dart';
 
-class EventScreen extends StatefulWidget {
+class AdminEvent extends StatefulWidget {
   late Event _event;
-  EventScreen(this._event);
+  AdminEvent(this._event);
 
   @override
-  State<EventScreen> createState() => _EventScreenState(_event);
+  State<AdminEvent> createState() => _AdminEventState(_event);
 }
 
-class _EventScreenState extends State<EventScreen> {
+class _AdminEventState extends State<AdminEvent> {
   late Event _event;
-  _EventScreenState(this._event);
+  _AdminEventState(this._event);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,13 +24,12 @@ class _EventScreenState extends State<EventScreen> {
           style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black54,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.black54,
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -108,23 +104,6 @@ class _EventScreenState extends State<EventScreen> {
           height: 20,
         ),
         TextFormField(
-          initialValue: allTaskToString(_event.tasks.tasks),
-          readOnly: true,
-          maxLines: 3,
-          decoration: const InputDecoration(
-            labelText: 'Задачи волонтеров',
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0.1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0.1),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        TextFormField(
           initialValue: _event.startedDay,
           readOnly: true,
           decoration: const InputDecoration(
@@ -157,9 +136,7 @@ class _EventScreenState extends State<EventScreen> {
           height: 20,
         ),
         ElevatedButton(
-          onPressed: () {
-            applyToEvent();
-          },
+          onPressed: () {},
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -170,7 +147,26 @@ class _EventScreenState extends State<EventScreen> {
             ),
           ),
           child: const Text(
-            'Подать заявку',
+            'Список заявок волонтеров',
+            style: TextStyle(color: Colors.blue),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(9.0),
+                side: const BorderSide(color: Colors.blue),
+              ),
+            ),
+          ),
+          child: const Text(
+            'Список выбранных волонтеров',
             style: TextStyle(color: Colors.blue),
           ),
         ),
@@ -179,7 +175,7 @@ class _EventScreenState extends State<EventScreen> {
         ),
         ElevatedButton(
           onPressed: () {
-            deleteEvent();
+            _showDialog(_event.id);
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -191,7 +187,7 @@ class _EventScreenState extends State<EventScreen> {
             ),
           ),
           child: const Text(
-            'Отменить заявку',
+            'Удалить мероприятие',
             style: TextStyle(color: Colors.red),
           ),
         ),
@@ -199,62 +195,44 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
-  String allTaskToString(List<Task> tasks) {
-    String stringTask = '';
-    tasks.forEach((element) {
-      stringTask = '$stringTask${element.description},';
-    });
-    return stringTask;
+  _showDialog(int eventId) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Удалить мероприятие?'),
+            content: const Text(
+                'Удаление мероприятия приведет также к удалению заявкам на это мероприятие'),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Нет')),
+                  ElevatedButton(
+                      onPressed: () {
+                        DBProvider.db.getDBAuth().then((value) => EventApi()
+                            .deleteEvent(value.accessToken, eventId)
+                            .then((value) => showSnackBar(value)));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Да'))
+                ],
+              ),
+            ],
+          );
+        });
   }
 
-  void applyToEvent() {
-    DBProvider.db.getDBAuth().then((value) {
-      if (value.accessRole == 'ADMIN') {
-        onTappedApply('ADMIN');
-      } else {
-        ApplicationApi()
-            .applyToEvent(_event.id, value.accessToken)
-            .then((value) => {onTappedApply(value.status)});
-      }
-    });
-  }
-
-  void deleteEvent() {
-    DBProvider.db.getDBAuth().then((value) {
-      if (value.accessRole == 'ADMIN') {
-        onTappedDelete('Ты админ тебе нельзя учавствовать');
-      } else {
-        DBProvider.db.getDBAuth().then((value) => ApplicationApi()
-            .deleteApply(_event.id, value.accessToken)
-            .then((value) => {onTappedDelete(value)}));
-      }
-    });
-  }
-
-  void onTappedApply(String status) {
-    if (status.isEmpty) {
-      status = 'Ты уже подал заявку';
-    } else if (status == 'ADMIN') {
-      status = 'Ты админ, тебе нельзя подавать заявки';
-    } else if (status.isNotEmpty) {
-      status = 'Заявка подана!';
-    }
-    final snackBar = SnackBar(
-      content: Text(status),
-      action: SnackBarAction(
-        label: 'Ок',
-        onPressed: () {},
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void onTappedDelete(String value) {
+  void showSnackBar(String value) {
     final snackBar = SnackBar(
       content: Text(value),
       action: SnackBarAction(
-        label: 'Ок',
+        label: 'Понял',
         onPressed: () {},
       ),
     );

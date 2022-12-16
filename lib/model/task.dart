@@ -29,9 +29,7 @@ class TaskList {
   }
 
   factory TaskList.fromDynamicJson(dynamic json) {
-    print(json);
     var taskJson = json as List;
-    print(taskJson);
     List<Task> tasks = taskJson.map((e) => Task.fromJson(e)).toList();
     return TaskList(tasks);
   }

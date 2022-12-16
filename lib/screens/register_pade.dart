@@ -355,8 +355,8 @@ class RegisterState extends State<RegisterPage> {
           _passwordController.text,
           _phoneController.text,
           _emailController.text,
-          _expirienceController.text,
-          _languageController.text,
+          _expirienceController.text.isEmpty? 'Не имею': _expirienceController.text,
+          _languageController.text.isEmpty? 'Только русский': _languageController.text,
           _educationController.text,
           sex);
       AuthApi().register(user).then((value) {

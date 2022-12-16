@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:volunteer/model/task.dart';
 
 class Event {
@@ -21,7 +20,6 @@ class Event {
         json['volunteerAmount'] as int,
         json['place'] as String,
         TaskList.fromDynamicJson(json['tasks']),
-        // TaskList.fromDynamicJson(json['tasks']),
         json['startedDay'] as String,
         json['endedDay'] as String,
         json['startedTime'] as String);

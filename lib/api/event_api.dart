@@ -39,7 +39,7 @@ class EventApi {
     }
   }
 
-   Future<String> deleteEvent(String accessToken,int eventId) async {
+  Future<String> deleteEvent(String accessToken, int eventId) async {
     final response = await http.delete(
       Uri.parse(
           '${Constants.VOLUNTEER_BASE_SCHEMA}${Constants.VOLUNTEER_BASE_URL_DOMAIN}${Constants.VOLUNTEER_ADMIN_PATH}/$eventId'),
@@ -84,8 +84,6 @@ class EventApi {
     if (response.statusCode == 201) {
       return 'Успешно создана!';
     } else {
-      print(response.statusCode);
-      print(response.reasonPhrase);
       return 'Произошла ошибка';
     }
   }

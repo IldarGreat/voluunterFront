@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:volunteer/model/user.dart';
 
 import '../db/database.dart';
-import '../model/auth.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -159,7 +158,6 @@ class MainPageState extends State<MainPage> {
 
   void hasAuthFuture() async {
     DBUser user = await DBProvider.db.getDBAuth();
-    print(user.accessRole);
     if (user.accessRole == 'USER') {
       Navigator.pushNamed(context, '/mainAuth', arguments: false);
     } else if (user.accessRole == 'ADMIN') {

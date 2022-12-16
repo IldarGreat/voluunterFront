@@ -136,7 +136,6 @@ class EventState extends State<EventsWidget> {
                 Navigator.pushNamed(context, '/event', arguments: value));
           });
         } else {
-          print('$id');
           DBProvider.db.getDBAuth().then((value) {
             if (value.accessRole == 'ADMIN') {
               onTappedApply('ADMIN');

@@ -188,7 +188,6 @@ class LoginState extends State<LoginPage> {
         if (value.role == 'ERROR') {
           _errorBar(value.accessToken);
         } else {
-          print(value.firstName);
           DBUser dbUser = DBUser(Random().nextInt(1000), value.firstName,
               value.secondName, value.accessToken, value.login, value.role);
           DBProvider.db.insertAuth(dbUser);

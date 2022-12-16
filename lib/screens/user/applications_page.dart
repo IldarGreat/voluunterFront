@@ -52,54 +52,60 @@ class _ApplicationsWidgetState extends State<ApplicationsWidget> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
-          future: _applicationList,
-          builder: ((context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data?.applications.length == 0) {
-                return const Center(
-                  child: Text('Заявок нет'),
-                );
-              }
-              return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data?.applications.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          '${snapshot.data?.applications[index].eventTitle}',
-                          style: const TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          children: [
-                            const SizedBox(
-                              height: 15,
+        children: [
+          const Text(
+            'Мои заявки',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FutureBuilder(
+              future: _applicationList,
+              builder: ((context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data?.applications.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            title: Text(
+                              '${snapshot.data?.applications[index].eventTitle} $index',
+                              style: const TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            subtitle: Column(
                               children: [
-                                button(snapshot.data!.applications[index].id),
-                                statusText(
-                                    snapshot.data!.applications[index].status)
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    button(snapshot
+                                        .data!.applications[index].eventId),
+                                    statusText(snapshot
+                                        .data!.applications[index].status)
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            } else if (snapshot.hasError) {
-              return const Text('Error');
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-        ),
+                          ),
+                        );
+                      });
+                } else if (snapshot.hasError) {
+                  return const Text('Error');
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [

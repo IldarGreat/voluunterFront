@@ -20,6 +20,7 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         title: const Text(
           'Меню',
@@ -43,79 +44,80 @@ class MainPageState extends State<MainPage> {
       ),
       body: Column(
         children: [
-          Container(
-            color: Colors.blue,
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 150,
-                ),
-                const Text(
-                  'Помощь.\norg',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 123),
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(1.0, 1.0),
-                        blurRadius: 3.0,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ],
+          SizedBox(
+           // height: MediaQuery.of(context).size.height,
+            child: Container(
+             // color: Colors.blue,
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 150,
                   ),
-                ),
-                const SizedBox(
-                  height: 150,
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9.0),
-                        side: const BorderSide(
-                            color: Color.fromARGB(255, 255, 255, 123)),
-                      ),
+                  const Text(
+                    'Помощь.\norg',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 123),
+                      fontSize: 60,
+                      fontWeight: FontWeight.bold,
+                      shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(1.0, 1.0),
+                          blurRadius: 3.0,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ],
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/register', arguments: false);
-                  },
-                  child: const Text(
-                    'Стать волонтером',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 123),
-                        fontSize: 30),
+                  const SizedBox(
+                    height: 150,
                   ),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9.0),
-                        side: const BorderSide(
-                            color: Color.fromARGB(255, 255, 255, 123)),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),
+                          side: const BorderSide(
+                              color: Color.fromARGB(255, 255, 255, 123)),
+                        ),
                       ),
                     ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register',
+                          arguments: false);
+                    },
+                    child: const Text(
+                      'Стать волонтером',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 123),
+                          fontSize: 30),
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: const Text(
-                    'Войти в аккаунт',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 123),
-                        fontSize: 30),
+                  const SizedBox(
+                    height: 50,
                   ),
-                ),
-                const SizedBox(
-                  height: 125,
-                ),
-              ],
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),
+                          side: const BorderSide(
+                              color: Color.fromARGB(255, 255, 255, 123)),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Text(
+                      'Войти в аккаунт',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 123),
+                          fontSize: 30),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

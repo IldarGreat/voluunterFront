@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:volunteer/api/auth_api.dart';
+import 'package:volunteer/api/user_api.dart';
 import 'package:volunteer/db/database.dart';
 
 import '../model/user.dart';
@@ -23,7 +24,7 @@ class RegisterState extends State<RegisterPage> {
   final _surnameController = TextEditingController();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
+  final _phoneController = TextEditingController(text: '+7');
   final _emailController = TextEditingController();
   final _expirienceController = TextEditingController();
   final _languageController = TextEditingController();
@@ -32,6 +33,26 @@ class RegisterState extends State<RegisterPage> {
   String sex = sexs.first;
   late bool editData;
   RegisterState(this.editData);
+  @override
+  void initState() {
+    super.initState();
+    if (editData == true) {
+      DBProvider.db
+          .getDBAuth()
+          .then((value) => UserApi().getMe(value.accessToken).then((value) {
+                if (value != null) {
+                  _nameController.text = value.firstName;
+                  _surnameController.text = value.secondName;
+                  _phoneController.text = value.phone;
+                  _emailController.text = value.email;
+                  _expirienceController.text = value.experience;
+                  _languageController.text = value.language;
+                  _educationController.text = value.education;
+                }
+              }));
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -66,7 +87,7 @@ class RegisterState extends State<RegisterPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/reference');
+              Navigator.pushNamed(context, '/info');
             },
             icon: const Icon(Icons.more_vert),
             color: Colors.black54,
@@ -140,6 +161,13 @@ class RegisterState extends State<RegisterPage> {
                 ),
               ),
               validator: (value) {
+                if (editData) {
+                  if (value!.isNotEmpty) {
+                    return "Редактировать логин запрещено";
+                  } else {
+                    return null;
+                  }
+                }
                 if (value!.isEmpty) {
                   return 'Введите логин';
                 }
@@ -177,6 +205,13 @@ class RegisterState extends State<RegisterPage> {
                 ),
               ),
               validator: (value) {
+                if (editData) {
+                  if (value!.isNotEmpty) {
+                    return "Редактировать пароль запрещено";
+                  } else {
+                    return null;
+                  }
+                }
                 if (value!.isEmpty) {
                   return 'Введите пароль';
                 }
@@ -191,7 +226,7 @@ class RegisterState extends State<RegisterPage> {
             ),
             TextFormField(
               controller: _phoneController,
-              maxLength: 10,
+              maxLength: 12,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: 'Номер телефона',
@@ -202,8 +237,15 @@ class RegisterState extends State<RegisterPage> {
                   borderSide: BorderSide(width: 0.1),
                 ),
               ),
-              validator: (value) =>
-                  (value!.isEmpty) ? 'Введите номер телефона' : null,
+              validator: (value) {
+                if (value!.isEmpty || !value.contains('+7')) {
+                  return "Введите номер в формате +7";
+                }
+                if (value.length < 12) {
+                  return 'Введите корректный номер телефона';
+                }
+                return null;
+              },
             ),
             const SizedBox(
               height: 20,
@@ -355,29 +397,43 @@ class RegisterState extends State<RegisterPage> {
           _passwordController.text,
           _phoneController.text,
           _emailController.text,
-          _expirienceController.text.isEmpty? 'Не имею': _expirienceController.text,
-          _languageController.text.isEmpty? 'Только русский': _languageController.text,
+          _expirienceController.text.isEmpty
+              ? 'Не имею'
+              : _expirienceController.text,
+          _languageController.text.isEmpty
+              ? 'Только русский'
+              : _languageController.text,
           _educationController.text,
           sex);
-      AuthApi().register(user).then((value) {
-        if (value.role == 'ERROR') {
-          _errorBar(value.accessToken);
-        } else {
-          DBUser dbUser = DBUser(
-              Random().nextInt(1000),
-              _nameController.text,
-              _surnameController.text,
-              value.accessToken,
-              value.login,
-              value.role);
-          DBProvider.db.insertAuth(dbUser);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const PersonalAreaUserWidget()),
-          );
-        }
-      });
+      if (editData) {
+        DBProvider.db.getDBAuth().then((value) =>
+            UserApi().updatUser(value.accessToken, user).then((value) {
+              if (value != null) {
+                _errorBar('Данные изменены');
+                Navigator.pop(context);
+              }
+            }));
+      } else {
+        AuthApi().register(user).then((value) {
+          if (value.role == 'ERROR') {
+            _errorBar(value.accessToken);
+          } else {
+            DBUser dbUser = DBUser(
+                Random().nextInt(1000),
+                _nameController.text,
+                _surnameController.text,
+                value.accessToken,
+                value.login,
+                value.role);
+            DBProvider.db.insertAuth(dbUser);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const PersonalAreaUserWidget()),
+            );
+          }
+        });
+      }
     }
   }
 

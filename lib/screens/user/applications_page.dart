@@ -44,7 +44,7 @@ class _ApplicationsWidgetState extends State<ApplicationsWidget> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/reference');
+              Navigator.pushNamed(context, '/info');
             },
             icon: const Icon(Icons.more_vert),
             color: Colors.black54,

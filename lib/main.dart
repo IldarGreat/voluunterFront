@@ -10,6 +10,7 @@ import 'screens/admin/admin_area.dart';
 import 'screens/admin/all_application_page.dart';
 import 'screens/admin/event_admin_page.dart';
 import 'screens/admin/my_event_page.dart';
+import 'screens/informationPage.dart';
 import 'screens/user/event_page.dart';
 import 'screens/login_page.dart';
 import 'screens/main_page.dart';
@@ -73,6 +74,10 @@ void main() {
         case '/showUser':
           UserRequest user = settings.arguments as UserRequest;
           return MaterialPageRoute(builder: (context) => UserView(user));
+
+        case '/info':
+          return MaterialPageRoute(
+              builder: (context) => const InformationWidet());
       }
     },
   ));

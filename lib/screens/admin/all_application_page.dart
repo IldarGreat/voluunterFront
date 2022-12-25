@@ -43,7 +43,7 @@ class _AllApplicationsWidgetState extends State<AllApplicationsWidget> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/reference');
+              Navigator.pushNamed(context, '/info');
             },
             icon: const Icon(Icons.more_vert),
             color: Colors.black54,

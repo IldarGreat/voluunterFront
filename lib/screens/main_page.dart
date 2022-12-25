@@ -34,7 +34,7 @@ class MainPageState extends State<MainPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/reference');
+              Navigator.pushNamed(context, '/info');
             },
             icon: const Icon(Icons.more_vert),
             color: Colors.black54,
@@ -42,7 +42,7 @@ class MainPageState extends State<MainPage> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: Column(
+      body: ListView(
         children: [
           SizedBox(
            // height: MediaQuery.of(context).size.height,
